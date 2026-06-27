@@ -216,12 +216,13 @@ class DjangoNode(StructuredNode, metaclass=MetaClass):
 
         return opts
 
-    def full_clean(self, exclude, validate_unique=False):
+    def full_clean(self, exclude=None, validate_unique=False, validate_constraints=False):
         """
         Validate node, on error raising ValidationErrors which can be handled by django forms
 
         :param exclude:
         :param validate_unique: Check if conflicting node exists in the labels indexes
+        :param validate_constraints: Accept compatibility with Django's full_clean signature
         :return:
         """
 
