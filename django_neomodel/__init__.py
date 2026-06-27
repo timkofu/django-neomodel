@@ -257,6 +257,18 @@ class DjangoNode(StructuredNode, metaclass=MetaClass):
             if node and node.element_id != getattr(self, "element_id", None):
                 raise ValidationError({key, "already exists"})
 
+    def validate_constraints(self, exclude):
+        """
+        Compatibility shim for Django's validate_constraints() API.
+
+        Django may call Model.validate_constraints() to check database-level
+        constraints (e.g., UniqueConstraint, CheckConstraint). neomodel does
+        not support the full suite of Django constraints; we at least run
+        validate_unique to cover uniqueness checks backed by neomodel indexes.
+        """
+        # delegate unique constraint checks to validate_unique
+        return self.validate_unique(exclude)
+
     def pre_save(self):
         if getattr(settings, "NEOMODEL_SIGNALS", True):
             self._creating_node = getattr(self, "element_id", None) is None
